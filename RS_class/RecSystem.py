@@ -27,7 +27,8 @@ class KnnMv():
         # renomeando colunas
         df.rename(columns = {'nota_x':'nota', 'nota_y':'total_de_votos'}, inplace = True)
         # obtendo os filmes mais votados pelas pessoas e suas notas médias
-        df_aux2 = df.groupby(by = ['titulo', 'filmeId']).agg({'total_de_votos':'count', 'nota':'mean'}).reset_index().sort_values(by = 'total_de_votos', ascending = False)
+        df_aux2 = df.groupby(by = ['titulo', 'filmeId']).agg({'total_de_votos':'count', 
+        'nota':'mean'}).reset_index().sort_values(by = 'total_de_votos', ascending = False)
         df_aux2.rename(columns = {'nota':'nota_media'}, inplace = True)
         # filtrando colunas
         df_aux3 = df_aux2[['filmeId', 'nota_media']]
