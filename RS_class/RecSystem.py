@@ -1,3 +1,4 @@
+# imports
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,16 +7,34 @@ from math import sqrt
 class KnnMv():
 
     # função que pega os dados e renomeia colunas
-
-    def get_data(filmes, notas):
+    def get_data(filmes_path, notas_path):
         # lendo os dados
-        filmes = pd.read_csv(filmes)
-        notas = pd.read_csv(filmes)
+        filmes = pd.read_csv(filmes_path)
+        notas = pd.read_csv(notas_path)
 
         # alterando os nomes das colunas
         filmes.columns = ['filmeId', 'titulo', 'generos']
         notas.columns = ['usuarioId', 'filmeId', 'nota', 'momento']
         return filmes, notas
+
+    def aux_df(notas, filmes):
+        # criando tabela única para melhor análise
+        df = pd.merge(notas, filmes, how = 'left', right_on = 'filmeId', left_on = 'filmeId')
+        # criando coluna com a quantidade de notas atribuídas aos filmes
+        df_aux = df.groupby(by = 'filmeId').agg({'nota':'count'}).reset_index()
+        # juntando o dataframe inicial com a coluna de quantidade de notas
+        df = pd.merge(df, df_aux, how = 'left', right_on = 'filmeId', left_on = 'filmeId')
+        # renomeando colunas
+        df.rename(columns = {'nota_x':'nota', 'nota_y':'total_de_votos'}, inplace = True)
+        # obtendo os filmes mais votados pelas pessoas e suas notas médias
+        df_aux2 = df.groupby(by = ['titulo', 'filmeId']).agg({'total_de_votos':'count', 'nota':'mean'}).reset_index().sort_values(by = 'total_de_votos', ascending = False)
+        df_aux2.rename(columns = {'nota':'nota_media'}, inplace = True)
+        # filtrando colunas
+        df_aux3 = df_aux2[['filmeId', 'nota_media']]
+        # dataframe na forma final
+        df = pd.merge(df, df_aux3, how = 'left', right_on = 'filmeId', left_on = 'filmeId')
+
+        return df
 
     # função que calcula a distância euclidiana entre dois vetores
     def distancia_de_vetores(a, b):
