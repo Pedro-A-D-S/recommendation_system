@@ -63,7 +63,7 @@ class KnnMv():
         diferencas = notas1.join(notas2, lsuffix = '_esquerda', rsuffix = '_direita').dropna()
 
         if(len(diferencas) < minimo):
-        return None
+            return None
 
         # calcula a distância entre os dois usuários
         distancia = distancia_de_vetores(diferencas['nota_esquerda'], diferencas['nota_direita'])
