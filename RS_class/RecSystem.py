@@ -43,8 +43,8 @@ class KnnMv():
         return df
 
     # função que calcula a distância euclidiana entre dois vetores
-    def distancia_de_vetores(a, b):
-        dist = np.linalg.norm(a - b)
+    def distancia_de_vetores(vetor_a, vetor_b):
+        dist = np.linalg.norm(vetor_a - vetor_b)
         return dist
 
     # função que retorna dataframe com os coluna de notas e index como o id do filme
@@ -76,8 +76,8 @@ class KnnMv():
         self.distancia_de_usuarios()
         todos_os_usuarios = notas['usuarioId'].unique()
         distancias = [distancia_de_usuarios(voce_id, usuario_id) for usuario_id in todos_os_usuarios]
-        distancias = pd.DataFrame(distancias, columns = ['voce', 'outra_pessoa', 'distancia'])
-        return distancias
+        distancias_de_todos = pd.DataFrame(distancias, columns = ['voce', 'outra_pessoa', 'distancia'])
+        return distancias_de_todos
 
     def distancia_de_usuarios(self, usuario_id1, usuario_id2, minimo = 5):
         self.notas_do_usuario()
@@ -96,24 +96,24 @@ class KnnMv():
         distancia = distancia_de_vetores(diferencas['nota_esquerda'], diferencas['nota_direita'])
         return [usuario_id1, usuario_id2, distancia]
 
-    def mais_proximos_de(self, voce_id, n_mais_proximos = 5, numero_de_usuarios_a_analisar = None):
+    def mais_proximos_de(self, id_usuario, n_mais_proximos = 5, numero_de_usuarios_a_analisar = None):
         self.distancia_de_todos()
-        distancias = distancia_de_todos(voce_id, numero_de_usuarios_a_analisar = numero_de_usuarios_a_analisar)
-        mp = distancias.sort_values(by = 'distancia')
-        mp = distancias.set_index('outra_pessoa').drop(voce_id, errors = 'ignore')
+        distancias = distancia_de_todos(id_usuario, numero_de_usuarios_a_analisar = numero_de_usuarios_a_analisar)
+        nearest = distancias.sort_values(by = 'distancia')
+        nearest = distancias.set_index('outra_pessoa').drop(id_usuario, errors = 'ignore')
         
-        return mp
+        return nearest
 
-    def distancia_de_todos(self, voce_id, numero_de_usuarios_a_analisar = None):
+    def distancia_de_todos(self, id_usuario, numero_de_usuarios_a_analisar = None):
         self.notas
         self.distancia_de_usuarios()
         todos_os_usuarios = notas['usuarioId'].unique()
         if numero_de_usuarios_a_analisar:
             todos_os_usuarios = todos_os_usuarios[:numero_de_usuarios_a_analisar]
-        distancias = [distancia_de_usuarios(voce_id, usuario_id) for usuario_id in todos_os_usuarios]
-        distancias = list(filter(None, distancias))
-        distancias = pd.DataFrame(distancias, columns = ['voce', 'outra_pessoa', 'distancia'])
-        return distancias
+        distancia_a_todos = [distancia_de_usuarios(id_usuario, usuario_id) for usuario_id in todos_os_usuarios]
+        distancia_a_todos = list(filter(None, distancia_a_todos))
+        distancia_a_todos = pd.DataFrame(distancia_a_todos, columns = ['voce', 'outra_pessoa', 'distancia'])
+        return distancia_a_todos
 
     def sugere_para(self, voce, n_mais_proximos = 10, numero_de_usuarios_a_analisar = None):
         self.notas_do_usuario()
