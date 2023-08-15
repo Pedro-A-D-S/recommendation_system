@@ -29,7 +29,7 @@
     <li>Certifique-se de ter instalado as bibliotecas necessárias. Você pode usar o arquivo <code>requirements.txt</code> para instalar as dependências usando o comando:</li>
 </ol>
 
-<pre><code>pip install -r requirements.txt</code></pre>
+<pre><code>pip install -r src/requirements.txt</code></pre>
 
 <ol start="2">
     <li>Execute o notebook <code>notebooks/recomendacao_filmes.ipynb</code>. Este notebook guiará você por todo o processo de análise de dados, construção do sistema de recomendação e geração de resultados.</li>
